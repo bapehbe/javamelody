@@ -16,26 +16,34 @@ import java.util.Set;
 public class JMXExpose {
     private static Set<ObjectName> names = new HashSet<ObjectName>();
 
-    public static void start(Collector collector, ServletContext servletContext) throws JMException {
-        String webapp = new File(servletContext.getRealPath("/")).getName();
-        MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
-        List<Counter> counters = collector.getCounters();
-        for (Counter counter: counters) {
-            CounterRequestMXBean mxBean = new CounterRequestMXBeanImpl(counter);
-            ObjectName name = new ObjectName(String.format("net.bull.javamelody:type=CounterRequest,context=%s,name=%s",
-                    webapp, counter.getName()));
-            platformMBeanServer.registerMBean(mxBean, name);
-            names.add(name);
+    public static void start(Collector collector, ServletContext servletContext) {
+        try {
+            String webapp = new File(servletContext.getRealPath("/")).getName();
+            MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+            List<Counter> counters = collector.getCounters();
+            for (Counter counter: counters) {
+                CounterRequestMXBean mxBean = new CounterRequestMXBeanImpl(counter);
+                ObjectName name = new ObjectName(String.format("net.bull.javamelody:type=CounterRequest,context=%s,name=%s",
+                        webapp, counter.getName()));
+                platformMBeanServer.registerMBean(mxBean, name);
+                names.add(name);
+            }
+        } catch (JMException e) {
+            LOG.warn("failed to register JMX beans", e);
         }
     }
 
-    public static void stop() throws JMException {
-        MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
-        Iterator<ObjectName> it = names.iterator();
-        while (it.hasNext()) {
-            ObjectName name = it.next();
-            platformMBeanServer.unregisterMBean(name);
-            it.remove();
+    public static void stop() {
+        try {
+            MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+            Iterator<ObjectName> it = names.iterator();
+            while (it.hasNext()) {
+                ObjectName name = it.next();
+                platformMBeanServer.unregisterMBean(name);
+                it.remove();
+            }
+        } catch (JMException e) {
+            LOG.warn("failed to unregister JMX beans", e);
         }
     }
 }

@@ -124,11 +124,10 @@ public class MonitoringFilter implements Filter {
 					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
 
-		try {
+		if (Parameters.isJmxExposeEnabled()) {
 			JMXExpose.start(collector, config.getServletContext());
-		} catch (JMException e) {
-			LOG.warn("failed to register JMX beans", e);
 		}
+
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
 	}
@@ -140,6 +139,9 @@ public class MonitoringFilter implements Filter {
 			return;
 		}
 		final long start = System.currentTimeMillis();
+
+		JMXExpose.stop();
+
 		try {
 			if (filterContext != null) {
 				filterContext.destroy();
@@ -154,11 +156,7 @@ public class MonitoringFilter implements Filter {
 			filterConfig = null;
 			filterContext = null;
 		}
-		try {
-			JMXExpose.stop();
-		} catch (JMException e) {
-			LOG.warn("failed to unregister JMX beans", e);
-		}
+
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter destroy done in " + duration + " ms");
 	}

@@ -1,8 +1,7 @@
 package net.bull.javamelody;
 
 /**
- * @author jam
- * @version $Id$
+ * @author Alexey Pushkin
  */
 public class CounterRequestMXBeanImpl implements CounterRequestMXBean {
 
