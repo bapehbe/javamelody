@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import javax.management.JMException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -123,6 +124,11 @@ public class MonitoringFilter implements Filter {
 					.compile(Parameters.getParameter(Parameter.URL_EXCLUDE_PATTERN));
 		}
 
+		try {
+			JMXExpose.start(collector, config.getServletContext());
+		} catch (JMException e) {
+			LOG.warn("failed to register JMX beans", e);
+		}
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter init done in " + duration + " ms");
 	}
