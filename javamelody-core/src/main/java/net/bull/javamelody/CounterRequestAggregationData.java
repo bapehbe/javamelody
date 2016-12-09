@@ -1,11 +1,11 @@
 package net.bull.javamelody;
 
-import java.util.Map;
+import java.util.List;
 import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
- * @author jam
- * @version $Id$
+ * @author Alexey Pushkin
  */
 public class CounterRequestAggregationData {
     private CounterRequestData globalRequest;
@@ -13,6 +13,8 @@ public class CounterRequestAggregationData {
     private CounterRequestData severeRequest;
     private int warningThreshold;
     private int severeThreshold;
+    private SortedMap<String, CounterRequestData> requests;
+
 
     public CounterRequestAggregationData (CounterRequestAggregation aggregation) {
         this.globalRequest = new CounterRequestData(aggregation.getGlobalRequest());
@@ -20,6 +22,12 @@ public class CounterRequestAggregationData {
         this.severeRequest = new CounterRequestData(aggregation.getSevereRequest());
         this.warningThreshold = aggregation.getWarningThreshold();
         this.severeThreshold = aggregation.getSevereThreshold();
+
+        this.requests = new TreeMap<String, CounterRequestData>();
+        List<CounterRequest> requestList = aggregation.getRequests();
+        for (CounterRequest request: requestList) {
+            requests.put(request.getName(), new CounterRequestData(request));
+        }
     }
 
     public CounterRequestData getGlobalRequest() {
@@ -42,23 +50,7 @@ public class CounterRequestAggregationData {
         return severeThreshold;
     }
 
-    public void setGlobalRequest(CounterRequestData globalRequest) {
-        this.globalRequest = globalRequest;
-    }
-
-    public void setWarningRequest(CounterRequestData warningRequest) {
-        this.warningRequest = warningRequest;
-    }
-
-    public void setSevereRequest(CounterRequestData severeRequest) {
-        this.severeRequest = severeRequest;
-    }
-
-    public void setWarningThreshold(int warningThreshold) {
-        this.warningThreshold = warningThreshold;
-    }
-
-    public void setSevereThreshold(int severeThreshold) {
-        this.severeThreshold = severeThreshold;
+    public SortedMap<String, CounterRequestData> getRequests() {
+        return requests;
     }
 }

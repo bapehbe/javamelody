@@ -1,129 +1,53 @@
 package net.bull.javamelody;
 
-
+/**
+ * @author Alexey Pushkin
+ */
 public class CounterRequestData {
-	private float systemErrorPercentage;
-	private int cpuTimeMean;
-	private long cpuTimeSum;
-	private long maximum;
-	private int standardDeviation;
-	private int mean;
-	private long durationsSum;
-	private long hits;
-	private String name;
-	private int responseSizeMean;
+	private CounterRequest request;
 
     public CounterRequestData (CounterRequest request) {
-        responseSizeMean = request.getResponseSizeMean();
-        systemErrorPercentage = request.getSystemErrorPercentage();
-        cpuTimeMean = request.getCpuTimeMean();
-        cpuTimeSum = request.getCpuTimeSum();
-        maximum = request.getMaximum();
-        standardDeviation = request.getStandardDeviation();
-        mean = request.getMean();
-        durationsSum = request.getDurationsSum();
-        hits = request.getHits();
-        name = request.getName();
+		this.request = request;
     }
 
 	public String getName() {
-		return name;
+		return request.getName();
 	}
 
 	public long getHits() {
-		return hits;
+		return request.getHits();
 	}
 
 	public long getDurationsSum() {
-		return durationsSum;
+		return request.getDurationsSum();
 	}
 
 	public int getMean() {
-		return mean;
+		return request.getMean();
 	}
 
 	public int getStandardDeviation() {
-		return standardDeviation;
+		return request.getStandardDeviation();
 	}
 
 	public long getMaximum() {
-		return maximum;
+		return request.getMaximum();
 	}
 
 	public long getCpuTimeSum() {
-		return cpuTimeSum;
+		return request.getCpuTimeSum();
 	}
 
 	public int getCpuTimeMean() {
-		return cpuTimeMean;
+		return request.getCpuTimeMean();
 	}
 
 	public float getSystemErrorPercentage() {
-		return systemErrorPercentage;
+		return request.getSystemErrorPercentage();
 	}
 
 	public int getResponseSizeMean() {
-		return responseSizeMean;
+		return request.getResponseSizeMean();
 	}
-
-	public void setResponseSizeMean(int responseSizeMean) {
-		this.responseSizeMean = responseSizeMean;
-	}
-
-	public void setSystemErrorPercentage(float systemErrorPercentage) {
-		this.systemErrorPercentage = systemErrorPercentage;
-	}
-
-	public void setCpuTimeMean(int cpuTimeMean) {
-		this.cpuTimeMean = cpuTimeMean;
-	}
-
-	public void setCpuTimeSum(long cpuTimeSum) {
-		this.cpuTimeSum = cpuTimeSum;
-	}
-
-	public void setMaximum(long maximum) {
-		this.maximum = maximum;
-	}
-
-	public void setStandardDeviation(int standardDeviation) {
-		this.standardDeviation = standardDeviation;
-	}
-
-	public void setMean(int mean) {
-		this.mean = mean;
-	}
-
-	public void setDurationsSum(long durationsSum) {
-		this.durationsSum = durationsSum;
-	}
-
-	public void setHits(long hits) {
-		this.hits = hits;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/*
-	public static CounterRequestData from(CompositeData cd) {
-		if (cd == null) {
-			return null;
-		}
-
-		CounterRequestData data = new CounterRequestData();
-			private int responseSizeMean;
-	private float systemErrorPercentage;
-	private int cpuTimeMean;
-	private long cpuTimeSum;
-	private long maximum;
-	private int standardDeviation;
-	private int mean;
-	private long durationsSum;
-	private long hits;
-	private String name
-	}
-	*/
 
 }
