@@ -154,6 +154,11 @@ public class MonitoringFilter implements Filter {
 			filterConfig = null;
 			filterContext = null;
 		}
+		try {
+			JMXExpose.stop();
+		} catch (JMException e) {
+			LOG.warn("failed to unregister JMX beans", e);
+		}
 		final long duration = System.currentTimeMillis() - start;
 		LOG.debug("JavaMelody filter destroy done in " + duration + " ms");
 	}

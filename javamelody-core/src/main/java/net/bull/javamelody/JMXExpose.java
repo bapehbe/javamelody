@@ -5,12 +5,16 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.servlet.ServletContext;
 import java.io.File;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alexey Pushkin
  */
 public class JMXExpose {
+    private static Set<ObjectName> names = new HashSet<ObjectName>();
 
     public static void start(Collector collector, ServletContext servletContext) throws JMException {
         String webapp = new File(servletContext.getRealPath("/")).getName();
@@ -18,8 +22,20 @@ public class JMXExpose {
         List<Counter> counters = collector.getCounters();
         for (Counter counter: counters) {
             CounterRequestMXBean mxBean = new CounterRequestMXBeanImpl(counter);
-            String name = String.format("net.bull.javamelody:type=CounterRequest,name=%s,webapp=%s", counter.getName(), webapp);
-            platformMBeanServer.registerMBean(mxBean, new ObjectName(name));
+            ObjectName name = new ObjectName(String.format("net.bull.javamelody:type=CounterRequest,context=%s,name=%s",
+                    webapp, counter.getName()));
+            platformMBeanServer.registerMBean(mxBean, name);
+            names.add(name);
+        }
+    }
+
+    public static void stop() throws JMException {
+        MBeanServer platformMBeanServer = MBeans.getPlatformMBeanServer();
+        Iterator<ObjectName> it = names.iterator();
+        while (it.hasNext()) {
+            ObjectName name = it.next();
+            platformMBeanServer.unregisterMBean(name);
+            it.remove();
         }
     }
 }
